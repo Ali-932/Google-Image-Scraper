@@ -26,7 +26,7 @@ import re
 import patch
 
 class GoogleImageScraper():
-    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10):
+    def __init__(self, webdriver_path, image_path, search_key="cat", number_of_images=1, headless=True, min_resolution=(0, 0), max_resolution=(1920, 1080), max_missed=10,image_size=''):
         #check parameter types
         image_path = os.path.join(image_path, search_key)
         if (type(number_of_images)!=int):
@@ -35,7 +35,7 @@ class GoogleImageScraper():
         if not os.path.exists(image_path):
             print("[INFO] Image path not found. Creating a new folder.")
             os.makedirs(image_path)
-            
+
         #check if chromedriver is installed
         if (not os.path.isfile(webdriver_path)):
             is_patched = patch.download_lastest_chromedriver()
@@ -68,11 +68,12 @@ class GoogleImageScraper():
         self.number_of_images = number_of_images
         self.webdriver_path = webdriver_path
         self.image_path = image_path
-        self.url = "https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947"%(search_key)
+        self.url = f"https://www.google.com/search?q={search_key}&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947&&tbs=isz:{image_size},isz:ex,iszw:{min_resolution[0]},iszh:{min_resolution[1]}"
         self.headless=headless
         self.min_resolution = min_resolution
         self.max_resolution = max_resolution
         self.max_missed = max_missed
+        self.image_size = image_size
 
     def find_image_urls(self):
         """
@@ -112,7 +113,7 @@ class GoogleImageScraper():
                     imgurl = self.driver.find_element(By.XPATH, search_string%(indx_1+1))
                     imgurl.click()
                     missed_count = 0
-                    indx_1 = indx_1 + 1    
+                    indx_1 = indx_1 + 1
                 except Exception:
                     try:
                         imgurl = self.driver.find_element(By.XPATH, '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'%(indx_1,indx_2+1))

@@ -21,7 +21,8 @@ def worker_thread(search_key):
         headless, 
         min_resolution, 
         max_resolution, 
-        max_missed)
+        max_missed,
+        image_size)
     image_urls = image_scraper.find_image_urls()
     image_scraper.save_images(image_urls, keep_filenames)
 
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     max_missed = 10                     # Max number of failed images before exit
     number_of_workers = 1               # Number of "workers" used
     keep_filenames = False              # Keep original URL image filenames
+    image_size = 'l'                      # can be s for small, m for medium, l for large
 
     #Run each search_key in a separate thread
     #Automatically waits for all threads to finish
